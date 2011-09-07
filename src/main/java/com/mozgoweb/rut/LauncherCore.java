@@ -16,7 +16,6 @@
  *
  * More projects on http://www.mozgoweb.com
  */
-
 package com.mozgoweb.rut;
 
 import com.mozgoweb.rut.utils.FileUtils;
@@ -30,6 +29,7 @@ import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URI;
 import java.util.Observable;
 
 public class LauncherCore extends Observable implements Runnable {
@@ -84,7 +84,10 @@ public class LauncherCore extends Observable implements Runnable {
 
         try {
             //Connect to the update server
-            URL url = new URL(urlFile);
+            URI uri = new URI(SettingsReader.getInstance().getRemoteService(),
+                    SettingsReader.getInstance().getRemoteHostname(),
+                    SettingsReader.getInstance().getRemoteFile(), null);
+            URL url = uri.toURL();
             connection = (HttpURLConnection) url.openConnection();
             connection.connect();
 
@@ -98,7 +101,8 @@ public class LauncherCore extends Observable implements Runnable {
 
             stream = connection.getInputStream();
             //Open file to saving
-            file = new RandomAccessFile(FileUtils.getFileName(url), "rw");
+            file = new RandomAccessFile(FileUtils.getFileName(uri.getPath()), "rw"); //correct for whitespaces
+            
             //Find begin of the file
             file.seek(0);
 
@@ -143,7 +147,7 @@ public class LauncherCore extends Observable implements Runnable {
         } catch (IOException e) {
             error("error3");
             e.printStackTrace();
-        }catch (Throwable e){
+        } catch (Throwable e) {
             error(e.getMessage());
         } finally {
 
