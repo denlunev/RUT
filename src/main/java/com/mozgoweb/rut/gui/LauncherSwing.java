@@ -16,7 +16,6 @@
  *
  * More projects on http://www.mozgoweb.com
  */
-
 package com.mozgoweb.rut.gui;
 
 import com.mozgoweb.rut.LauncherCore;
@@ -29,6 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import com.mozgoweb.rut.LauncherCore.LauncherStatus;
 import com.mozgoweb.rut.Messages;
+import javax.swing.UIManager;
 
 public class LauncherSwing extends JFrame implements ILauncherGUI {
 
@@ -41,6 +41,12 @@ public class LauncherSwing extends JFrame implements ILauncherGUI {
 
     private void createAndShowGUI() {
         //Create and set up the window.
+        //This tries to sett nativ look & feel
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         JFrame frame = new JFrame(Messages.TITLE);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(new Dimension(400, 100));
@@ -74,13 +80,13 @@ public class LauncherSwing extends JFrame implements ILauncherGUI {
     public void update(Observable o, Object arg) {
         LauncherCore l = (LauncherCore) o;
         String text = Messages.CHECKING_NEW_VERSION;
-        
+
         if (l.getStatus() == LauncherStatus.DOWNLOADING) {
             progressBar.setEnabled(true);
             progressBar.setValue((int) l.getProgress());
             text = Messages.DOWNLOADING;
-        } else if (l.getStatus() == LauncherStatus.COMPLETE ||
-                l.getStatus() == LauncherStatus.UP_TO_DATE) {
+        } else if (l.getStatus() == LauncherStatus.COMPLETE
+                || l.getStatus() == LauncherStatus.UP_TO_DATE) {
 
             l.runCMD();
             System.exit(0);
