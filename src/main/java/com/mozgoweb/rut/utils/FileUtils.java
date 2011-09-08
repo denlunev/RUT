@@ -115,8 +115,8 @@ public class FileUtils {
      * @param url
      * @return
      */
-    public static String getFileName(URL url) {
-        String filename = url.getFile();
+    public static String getFileName(String path) {
+        String filename = path;
         return filename.substring(filename.lastIndexOf("/") + 1);
     }
 
